@@ -40,6 +40,12 @@ public class VeiculosController {
 		return ResponseEntity.ok(veiculos);
 	}
 	
+	@GetMapping("/disponiveis") //GET http://localhost:8080/api/veiculos/disponiveis
+	public ResponseEntity<List<Veiculos>> findDisponivel(){
+		List<Veiculos> veiculosDisponiveis = veiculosService.findDisponiveis();
+		return ResponseEntity.ok(veiculosDisponiveis);
+	}
+	
 	@GetMapping("/{id}") //GET http://localhost:8080/api/veiculos/{id}
 	public ResponseEntity<Optional<Veiculos>> findById(@PathVariable Long id){
 		Optional<Veiculos> veiculos = veiculosService.findById(id);

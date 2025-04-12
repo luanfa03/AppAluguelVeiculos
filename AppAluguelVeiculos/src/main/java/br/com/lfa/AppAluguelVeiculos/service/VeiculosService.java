@@ -27,6 +27,10 @@ public class VeiculosService {
 		return veiculosRepository.findById(id);
 	}
 	
+	public List<Veiculos> findDisponiveis(){
+		return veiculosRepository.findByDisponivelTrue();
+	}
+	
 	public Veiculos update(Long id, Veiculos veiculo) {
 		Optional<Veiculos> findVeiculo = veiculosRepository.findById(id);
 		if(findVeiculo.isPresent()) {
@@ -35,6 +39,7 @@ public class VeiculosService {
 			updVeiculos.setMarca(veiculo.getMarca());
 			updVeiculos.setAno(veiculo.getAno());
 			updVeiculos.setPlaca(veiculo.getPlaca());
+			updVeiculos.setDisponivel(veiculo.getDisponivel());
 			return veiculosRepository.save(updVeiculos);
 		}
 		return null;

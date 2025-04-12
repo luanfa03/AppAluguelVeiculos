@@ -27,14 +27,18 @@ public class Veiculos {
 	@Column(nullable = false)
 	private String placa;
 	
+	@Column(nullable = false)
+	private Boolean disponivel;
+	
 	public Veiculos() {};
 	
-	public Veiculos(Long id, String modelo, String marca, Integer ano, String placa) {
+	public Veiculos(Long id, String modelo, String marca, Integer ano, String placa, Boolean disponivel) {
 		this.id = id;
 		this.modelo = modelo;
 		this.marca = marca;
 		this.ano = ano;
 		this.placa = placa;
+		this.disponivel = disponivel;
 	}
 	
 	public Long getId() {
@@ -76,11 +80,19 @@ public class Veiculos {
 	public void setPlaca(String placa) {
 		this.placa = placa;
 	}
-	
+
+	public Boolean getDisponivel() {
+		return disponivel;
+	}
+
+	public void setDisponivel(Boolean disponivel) {
+		this.disponivel = disponivel;
+	}
+
 	@Override
 	public String toString() {
 		String retorno = "[" + "Modelo: " + this.modelo + ", " + "Marca: " + this.marca + ", "
-				+ "Ano: " + this.ano + ", " + "Placa: " + this.placa + "]";
+				+ "Ano: " + this.ano + ", " + "Placa: " + this.placa + "Disponibilidade: " + this.disponivel + "]";
 		return retorno;
 	}
 

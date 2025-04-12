@@ -1,6 +1,8 @@
 package br.com.lfa.AppAluguelVeiculos.model;
 
+import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,11 +29,12 @@ public class Cliente {
 	private String cpf;
 	
 	@Column(nullable = false)
-	private String dataNascimento;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private LocalDate dataNascimento;
 	
 	public Cliente() {}
 	
-	public Cliente(Long id, String nome, String email, String cpf, String dataNascimento) {
+	public Cliente(Long id, String nome, String email, String cpf, LocalDate dataNascimento) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
@@ -71,11 +74,11 @@ public class Cliente {
 		this.cpf = cpf;
 	}
 
-	public String getDataNascimento() {
+	public LocalDate getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(String dataNascimento) {
+	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 	
