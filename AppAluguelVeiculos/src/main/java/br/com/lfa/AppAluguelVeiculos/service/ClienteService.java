@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.lfa.AppAluguelVeiculos.dto.ClienteRequestDTO;
 import br.com.lfa.AppAluguelVeiculos.model.Cliente;
 import br.com.lfa.AppAluguelVeiculos.repository.ClienteRepository;
 
@@ -17,7 +18,12 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
-	public Cliente save(Cliente cliente) {
+	public Cliente save(ClienteRequestDTO dto) {
+		Cliente cliente = new Cliente();
+		cliente.setNome(dto.getNome());
+		cliente.setEmail(dto.getEmail());
+		cliente.setCpf(dto.getCpf());
+		cliente.setDataNascimento(dto.getDataNascimento());
 		if(isMaiorDeIdade(cliente.getDataNascimento()) == true) {
 			return clienteRepository.save(cliente);
 		} else {
@@ -34,18 +40,14 @@ public class ClienteService {
 		return clienteRepository.findById(id);
 	}
 	
-	public Cliente update(Long id, Cliente cliente) {
-		Optional<Cliente> findCliente = clienteRepository.findById(id);
-		if (findCliente.isPresent()) {
-			Cliente updCliente = findCliente.get();
-			updCliente.setNome(cliente.getNome());
-			updCliente.setEmail(cliente.getEmail());
-			updCliente.setCpf(cliente.getCpf());
-			updCliente.setDataNascimento(cliente.getDataNascimento());
-			return clienteRepository.save(updCliente);
-		} else {
-			return null;
-		}
+	public Optional<Cliente> update(Long id, ClienteRequestDTO dto) {
+	    return clienteRepository.findById(id).map(cliente -> {
+	    	cliente.setNome(dto.getNome());
+			cliente.setEmail(dto.getEmail());
+			cliente.setCpf(dto.getCpf());
+			cliente.setDataNascimento(dto.getDataNascimento());
+	        return clienteRepository.save(cliente);
+	    });
 	}
 	
 	public void delete(Long id) {

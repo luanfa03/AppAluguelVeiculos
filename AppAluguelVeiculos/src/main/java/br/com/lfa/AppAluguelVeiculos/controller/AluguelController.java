@@ -1,6 +1,7 @@
 package br.com.lfa.AppAluguelVeiculos.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lfa.AppAluguelVeiculos.dto.AluguelDTO;
+import br.com.lfa.AppAluguelVeiculos.dto.AluguelRequestDTO;
 import br.com.lfa.AppAluguelVeiculos.model.Aluguel;
 import br.com.lfa.AppAluguelVeiculos.service.AluguelService;
 
@@ -21,7 +24,7 @@ public class AluguelController {
 	AluguelService aluguelService;
 	
 	@PostMapping //POST http://localhost:8080/api/aluguel
-	public ResponseEntity<Aluguel> save(@RequestBody Aluguel aluguel){
+	public ResponseEntity<Aluguel> save(@RequestBody AluguelRequestDTO aluguel){
 		Aluguel addAluguel = aluguelService.save(aluguel);
 		if (addAluguel == null) {
 			return ResponseEntity.notFound().build();
@@ -31,8 +34,11 @@ public class AluguelController {
 	}
 	
 	@GetMapping //GET http://localhost:8080/api/aluguel
-	public ResponseEntity<List<Aluguel>> findAll(){
-		List<Aluguel> aluguel = aluguelService.findAll();
+	public ResponseEntity<List<AluguelDTO>> findAll(){
+		List<AluguelDTO> aluguel = aluguelService.findAll()
+				.stream()
+				.map(AluguelDTO::new)
+				.collect(Collectors.toList());
 		return ResponseEntity.ok(aluguel);
 	}
 }

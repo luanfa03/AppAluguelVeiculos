@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.lfa.AppAluguelVeiculos.dto.AluguelRequestDTO;
 import br.com.lfa.AppAluguelVeiculos.model.Aluguel;
 import br.com.lfa.AppAluguelVeiculos.model.Cliente;
 import br.com.lfa.AppAluguelVeiculos.model.Veiculos;
@@ -25,18 +26,24 @@ public class AluguelService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
-	public Aluguel save(Aluguel aluguel) {
-		Long veiculoId = aluguel.getVeiculo().getId();
+	public Aluguel save(AluguelRequestDTO dto) {
+		Aluguel aluguel = new Aluguel();
+		
+		aluguel.setId(dto.getId());
+		aluguel.setDataInicio(dto.getDataInicio());
+		aluguel.setDataFim(dto.getDataFim());
+		
+		Long veiculoId = dto.getVeiculo().getId();
 	    Veiculos veiculo = veiculoRepository.findById(veiculoId)
 	        .orElseThrow(() -> new RuntimeException("Veículo não encontrado com ID: " + veiculoId));
 	    
-	    Long clienteId = aluguel.getCliente().getId();
+	    Long clienteId = dto.getCliente().getId();
 	    Cliente cliente = clienteRepository.findById(clienteId)
 	    		.orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + clienteId));
 	    
 		if (Boolean.TRUE.equals(veiculo.getDisponivel())) {
 			
-			double dias = ChronoUnit.DAYS.between(aluguel.getDataInicio(), aluguel.getDataFim());
+			double dias = ChronoUnit.DAYS.between(dto.getDataInicio(), dto.getDataFim());
 			aluguel.setValorTotal(dias * 100); // preço fixo por dia de 100 reais 
 			
 			veiculo.setDisponivel(false);

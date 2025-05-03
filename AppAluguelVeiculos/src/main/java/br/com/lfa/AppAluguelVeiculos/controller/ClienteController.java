@@ -1,7 +1,7 @@
 package br.com.lfa.AppAluguelVeiculos.controller;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.lfa.AppAluguelVeiculos.dto.ClienteDTO;
+import br.com.lfa.AppAluguelVeiculos.dto.ClienteRequestDTO;
 import br.com.lfa.AppAluguelVeiculos.model.Cliente;
 import br.com.lfa.AppAluguelVeiculos.service.ClienteService;
 
@@ -25,7 +27,7 @@ public class ClienteController {
 	ClienteService clienteService;
 	
 	@PostMapping
-	public ResponseEntity<Cliente> save(@RequestBody Cliente cliente){
+	public ResponseEntity<Cliente> save(@RequestBody ClienteRequestDTO cliente){
 		Cliente addCliente = clienteService.save(cliente);
 		if (addCliente == null) {
 			return ResponseEntity.notFound().build();
@@ -35,29 +37,25 @@ public class ClienteController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<Cliente>> findById(@PathVariable Long id){
-		Optional<Cliente> findCliente = clienteService.findById(id);
-		if (findCliente == null) {
-			return ResponseEntity.notFound().build();
-		} else {
-			return ResponseEntity.ok(findCliente);
-		}
+	public ResponseEntity<ClienteDTO> findById(@PathVariable Long id){
+	    return clienteService.findById(id)
+	            .map(cliente -> ResponseEntity.ok(new ClienteDTO(cliente)))
+	            .orElse(ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Cliente>> findAll(){
-		List<Cliente> clientes = clienteService.findAll();
+	public ResponseEntity<List<ClienteDTO>> findAll(){
+		List<ClienteDTO> clientes = clienteService.findAll().stream()
+				.map(ClienteDTO::new)
+				.collect(Collectors.toList());
 		return ResponseEntity.ok(clientes);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Cliente> update(@PathVariable Long id,  @RequestBody Cliente cliente){
-		Optional<Cliente> findCliente = clienteService.findById(id);
-		if (findCliente.isPresent()) {
-			return ResponseEntity.ok(clienteService.update(id, cliente));
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<ClienteDTO> update(@PathVariable Long id,  @RequestBody ClienteRequestDTO dto){
+		return clienteService.update(id, dto)
+				.map(cliente -> ResponseEntity.ok(new ClienteDTO(cliente)))
+	    		.orElse(ResponseEntity.notFound().build());
 	}
 	
 	@DeleteMapping("/{id}")

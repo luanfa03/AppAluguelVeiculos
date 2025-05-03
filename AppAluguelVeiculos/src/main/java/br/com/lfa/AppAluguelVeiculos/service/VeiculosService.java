@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.lfa.AppAluguelVeiculos.dto.VeiculoRequestDTO;
 import br.com.lfa.AppAluguelVeiculos.model.Veiculos;
 import br.com.lfa.AppAluguelVeiculos.repository.VeiculosRepository;
 
@@ -15,8 +16,14 @@ public class VeiculosService {
 	@Autowired
 	private VeiculosRepository veiculosRepository;
 	
-	public Veiculos save(Veiculos veiculos) {
-		return veiculosRepository.save(veiculos);
+	public Veiculos save(VeiculoRequestDTO dto) {
+		Veiculos veiculo = new Veiculos();
+		veiculo.setModelo(dto.getModelo());
+		veiculo.setMarca(dto.getMarca());
+		veiculo.setPlaca(dto.getPlaca());
+		veiculo.setDisponivel(dto.getDisponivel());
+		veiculo.setAno(dto.getAno());
+		return veiculosRepository.save(veiculo);
 	}
 	
 	public List<Veiculos> findAll(){
@@ -31,18 +38,15 @@ public class VeiculosService {
 		return veiculosRepository.findByDisponivelTrue();
 	}
 	
-	public Veiculos update(Long id, Veiculos veiculo) {
-		Optional<Veiculos> findVeiculo = veiculosRepository.findById(id);
-		if(findVeiculo.isPresent()) {
-			Veiculos updVeiculos = findVeiculo.get();
-			updVeiculos.setModelo(veiculo.getModelo());
-			updVeiculos.setMarca(veiculo.getMarca());
-			updVeiculos.setAno(veiculo.getAno());
-			updVeiculos.setPlaca(veiculo.getPlaca());
-			updVeiculos.setDisponivel(veiculo.getDisponivel());
-			return veiculosRepository.save(updVeiculos);
-		}
-		return null;
+	public Optional<Veiculos> update(Long id, VeiculoRequestDTO dto) {
+	    return veiculosRepository.findById(id).map(veiculo -> {
+	        veiculo.setMarca(dto.getMarca());
+	        veiculo.setModelo(dto.getModelo());
+	        veiculo.setPlaca(dto.getPlaca());
+	        veiculo.setDisponivel(dto.getDisponivel());
+	        veiculo.setAno(dto.getAno());
+	        return veiculosRepository.save(veiculo);
+	    });
 	}
 	
 	public void delete(Long id) {
